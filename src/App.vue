@@ -1,4 +1,7 @@
 <script setup>
+import Cabecalho from './components/Cabecalho.vue';
+import Formulario from './components/Formulario.vue';
+import List from './components/List.vue';
 import { reactive } from 'vue';
 
 const estado = reactive({
@@ -45,43 +48,9 @@ const adcionarTarefa = () => {
 
 <template>
   <div class="container">
-    <header class="p-5 mb-4 mt-4 bg-light rounded-3">
-      <h1>Minhas tarefas</h1>
-      <p>
-        Você possui {{ getTarefasPendentes().length }} tarefas pendentes.
-      </p>
-    </header>
-    <form @submit.prevent="adcionarTarefa">
-      <div class="row">
-        <div class="col">
-          <input :value="estado.tarefaTemp" @change="e => estado.tarefaTemp = e.target.value" required type="text" placeholder="Digite uma tarefa" class="form-control" />
-        </div>
-        <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">Adicionar</button>
-        </div>
-        <div class="col-md-2">
-          <select @change="e => estado.filtro = e.target.value" class="form-control">
-            <option value="todas">Todas as tarefas</option>
-            <option value="pendentes">Pendentes</option>
-            <option value="finalizadas">Finalizadas</option>
-          </select>
-        </div>
-      </div>
-    </form>
-    <ul class="list-group mt-4">
-      <li class="list-group-item" v-for="tarefa in getTarefasFiltradas()">
-        <input @change="e => tarefa.finalizada = e.target.checked" :checked="tarefa.finalizada" :id="tarefa.descricao" type="checkbox">
-        <label :class="{ done: tarefa.finalizada }" class="ms-3" :for="tarefa.descricao">
-          {{ tarefa.descricao }}
-        </label>
-      </li>
-    </ul>
+    <Cabecalho :tarefas-pendentes="getTarefasPendentes().length" />
+    <Formulario :trocar-filtro="e => estado.filtro = e.target.value" :tarefa-temp="estado.tarefaTemp" :edita-tarefa-temp="e => estado.tarefaTemp = e.target.value" :adcionar-tarefa="adcionarTarefa" />
+    <List :tarefas="getTarefasFiltradas()"/>
   </div>
 </template>
 
-<style scoped>
-.done {
-  text-decoration: line-through;
-  color: #999;
-}
-</style>
